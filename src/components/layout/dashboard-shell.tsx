@@ -20,11 +20,11 @@ import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
 const items = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/bookings", label: "Bookings", icon: BookOpenCheck },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/earnings", label: "Settlements", icon: CircleDollarSign },
-  { href: "/turf", label: "Venues", icon: Volleyball },
+  { href: "/turf", label: "Turfs", icon: Volleyball },
 ];
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const path = usePathname(),
