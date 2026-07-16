@@ -1,13 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Bell, Moon, Volume2, ChevronLeft, type LucideIcon } from "lucide-react";
+import { Bell, Moon, Volume2, ChevronLeft, ShieldAlert, type LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ownerService } from "@/services/owner.service";
+import type { Turf } from "@/types";
 
 type SettingKey =
-  "newBooking" | "cancellation" | "payment" | "reminders" | "sound";
+  | "manualApproval"
+  | "newBooking"
+  | "cancellation"
+  | "payment"
+  | "reminders"
+  | "sound";
 
 const rows: {
   key: SettingKey;
@@ -15,6 +22,12 @@ const rows: {
   sub: string;
   Icon: LucideIcon;
 }[] = [
+  {
+    key: "manualApproval",
+    title: "Manual Booking Approval",
+    sub: "Review bookings before confirming (Disable for Instant Approval)",
+    Icon: ShieldAlert,
+  },
   {
     key: "newBooking",
     title: "New bookings",
@@ -50,15 +63,54 @@ const rows: {
 export default function SettingsPage() {
   const router = useRouter();
   const [settings, setSettings] = useState<Record<SettingKey, boolean>>({
+    manualApproval: false,
     newBooking: true,
     cancellation: true,
     payment: true,
     reminders: true,
     sound: true,
   });
+  const [turfs, setTurfs] = useState<any[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    ownerService.turfs().then((r) => {
+      const list = (r.data || r || []) as any[];
+      setTurfs(list);
+      // Set to manual if any turf requires manual approval
+      const isManual = list.some((t) => t.bookingApprovalType === "MANUAL");
+      setSettings((s) => ({ ...s, manualApproval: isManual }));
+    }).catch(() => {});
+  }, []);
   
   const toggle = (key: SettingKey) =>
     setSettings((s) => ({ ...s, [key]: !s[key] }));
+
+  const saveChanges = async () => {
+    setSaving(true);
+    try {
+      const mode = settings.manualApproval ? "MANUAL" : "INSTANT";
+      
+      // Filter out turfs that already match the target mode so we only update the necessary ones
+      const turfsToUpdate = turfs.filter(
+        (t) => (t.bookingApprovalType || "INSTANT") !== mode
+      );
+
+      if (turfsToUpdate.length > 0) {
+        await Promise.all(
+          turfsToUpdate.map((t) => 
+            ownerService.updateTurf(t.id, { bookingApprovalType: mode })
+          )
+        );
+      }
+      
+      toast.success("Settings saved successfully!");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to update settings");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-6 w-full">
@@ -81,20 +133,20 @@ export default function SettingsPage() {
         <Card className="divide-y divide-zinc-800">
           {rows.map(({ key, title, sub, Icon }) => (
             <div key={key} className="flex items-center gap-4 p-5">
-              <span className="rounded-xl bg-zinc-800 p-2 text-lime-300">
+              <span className={`rounded-xl p-2.5 ${key === "manualApproval" ? (settings[key] ? "bg-lime-500/10 text-lime-400" : "bg-zinc-800 text-zinc-400") : "bg-zinc-800 text-lime-300"}`}>
                 <Icon size={18} />
               </span>
               <div className="flex-1">
-                <p className="font-semibold">{title}</p>
+                <p className={`font-semibold ${key === "manualApproval" && settings[key] ? "text-lime-300" : "text-zinc-200"}`}>{title}</p>
                 <p className="text-sm text-zinc-500">{sub}</p>
               </div>
               <button
                 aria-pressed={settings[key]}
                 onClick={() => toggle(key)}
-                className={`h-7 w-12 rounded-full p-1 transition ${settings[key] ? "bg-lime-400" : "bg-zinc-700"}`}
+                className={`h-7 w-12 rounded-full p-1 transition-colors ${settings[key] ? "bg-lime-400" : "bg-zinc-700"}`}
               >
                 <span
-                  className={`block size-5 rounded-full bg-white transition ${settings[key] ? "translate-x-5" : ""}`}
+                  className={`block size-5 rounded-full bg-white transition-transform ${settings[key] ? "translate-x-5" : ""}`}
                 />
               </button>
             </div>
@@ -107,8 +159,8 @@ export default function SettingsPage() {
           </div>
           <Moon className="text-lime-300" />
         </Card>
-        <Button onClick={() => toast.success("Settings saved")}>
-          Save changes
+        <Button onClick={saveChanges} disabled={saving} className="w-full sm:w-auto font-bold px-8 shadow-lg shadow-lime-400/20">
+          {saving ? "Saving changes..." : "Save changes"}
         </Button>
       </div>
     </div>
