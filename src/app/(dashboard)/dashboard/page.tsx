@@ -93,57 +93,56 @@ export default function DashboardPage() {
           detail="Requires your attention"
         />
       </div>
-      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-[1.5fr_1fr]">
-        <div className="min-w-0 overflow-hidden">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-bold">Recent bookings</h2>
-            <Link
-              href="/bookings"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-lime-300"
-            >
-              View all <ArrowUpRight size={15} />
-            </Link>
-          </div>
-          <div className="overflow-x-auto">
-            <BookingTable bookings={(data?.recentBookings || []) as Booking[]} />
-          </div>
-        </div>
-        <Card className="p-5">
-          <p className="text-sm text-zinc-500 font-semibold uppercase tracking-wider">Weekly Revenue Trend</p>
-          <p className="mt-2 text-3xl font-black text-white">
-            {currency(totalRevenue)}
-          </p>
-          <div className="mt-7 flex h-36 items-end gap-3 border-b border-zinc-800/80 pb-2">
-            {(() => {
-              const chartData = data?.trends?.revenueChart || [];
-              const maxVal = Math.max(...chartData.map((c: any) => c.value), 0) || 1;
-              return chartData.map((item: any, i: number) => {
-                const pct = maxVal > 0 ? (item.value / maxVal) * 75 + 25 : 25; // 25% minimum height for empty bars
-                return (
-                  <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2 group relative">
+      <Card className="p-5 w-full">
+        <p className="text-sm text-zinc-500 font-semibold uppercase tracking-wider">Weekly Revenue Trend</p>
+        <p className="mt-2 text-3xl font-black text-zinc-900 dark:text-white">
+          {currency(totalRevenue)}
+        </p>
+        <div className="mt-7 flex h-48 items-end gap-3 border-b border-zinc-200 dark:border-zinc-800/80 pb-2">
+          {(() => {
+            const chartData = data?.trends?.revenueChart || [];
+            const maxVal = Math.max(...chartData.map((c: any) => c.value), 0) || 1;
+            return chartData.map((item: any, i: number) => {
+              const pct = maxVal > 0 ? (item.value / maxVal) * 75 + 25 : 25; // 25% minimum height for empty bars
+              return (
+                <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2 group relative">
+                  <div
+                    className="w-full max-w-[48px] rounded-t bg-lime-400/10 hover:bg-lime-400/20 relative cursor-pointer transition-colors duration-200"
+                    style={{ height: `${pct}%` }}
+                  >
                     <div
-                      className="w-full rounded-t bg-lime-400/10 hover:bg-lime-400/20 relative cursor-pointer transition-colors duration-200"
-                      style={{ height: `${pct}%` }}
-                    >
-                      <div
-                        className="absolute inset-x-0 bottom-0 rounded-t bg-lime-400 transition-all duration-200 group-hover:bg-lime-300"
-                        style={{ height: `${item.value > 0 ? 100 : 0}%` }}
-                      />
-                      {/* Tooltip on hover */}
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 hidden group-hover:block bg-zinc-950 text-zinc-100 text-[10px] font-bold py-1.5 px-2.5 rounded-lg border border-zinc-800 pointer-events-none z-30 shadow-xl whitespace-nowrap">
-                        {currency(item.value)}
-                      </div>
+                      className="absolute inset-x-0 bottom-0 rounded-t bg-lime-400 transition-all duration-200 group-hover:bg-lime-300"
+                      style={{ height: `${item.value > 0 ? 100 : 0}%` }}
+                    />
+                    {/* Tooltip on hover */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 hidden group-hover:block bg-zinc-950 text-zinc-100 text-[10px] font-bold py-1.5 px-2.5 rounded-lg border border-zinc-800 pointer-events-none z-30 shadow-xl whitespace-nowrap">
+                      {currency(item.value)}
                     </div>
-                    <span className="text-[10px] text-zinc-500 font-bold uppercase truncate">{item.label}</span>
                   </div>
-                );
-              });
-            })()}
-          </div>
-          <p className="mt-3 text-xs text-zinc-500">
-            Total booking collections over the last 7 days.
-          </p>
-        </Card>
+                  <span className="text-[10px] text-zinc-500 font-bold uppercase truncate">{item.label}</span>
+                </div>
+              );
+            });
+          })()}
+        </div>
+        <p className="mt-3 text-xs text-zinc-500">
+          Total booking collections over the last 7 days.
+        </p>
+      </Card>
+
+      <div className="min-w-0 overflow-hidden w-full pt-4">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-bold">Recent bookings</h2>
+          <Link
+            href="/bookings"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-lime-500 hover:text-lime-600 dark:text-lime-300"
+          >
+            View all <ArrowUpRight size={15} />
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <BookingTable bookings={(data?.recentBookings || []) as Booking[]} />
+        </div>
       </div>
     </div>
   );
