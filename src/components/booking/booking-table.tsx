@@ -61,7 +61,7 @@ export function BookingTable({ bookings }: { bookings: Booking[] }) {
                 <td className="px-5 py-4">
                   <Link
                     aria-label="View booking"
-                    href={`/dashboard/bookings/${b.id}`}
+                    href={`/bookings/${b.id}`}
                     className="inline-flex rounded-lg p-2 text-zinc-400 hover:bg-zinc-800 hover:text-lime-300"
                   >
                     <ChevronRight size={18} />

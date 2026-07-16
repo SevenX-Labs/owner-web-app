@@ -118,21 +118,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Link
-              href="/scanner"
-              className="hidden items-center gap-2 rounded-xl bg-lime-400 px-3 py-2 text-sm font-bold text-zinc-950 sm:flex"
-            >
-              <ScanLine size={16} />
-              Check-in
-            </Link>
-            <Link
-              href="/notifications"
-              aria-label="Notifications"
-              className="relative rounded-xl p-2.5 text-zinc-300 hover:bg-zinc-800"
-            >
-              <Bell size={19} />
-              <span className="absolute right-2 top-2 size-2 rounded-full bg-lime-400" />
-            </Link>
-            <Link
               href="/profile"
               aria-label="Profile"
               className="rounded-xl p-2.5 text-zinc-300 hover:bg-zinc-800"
