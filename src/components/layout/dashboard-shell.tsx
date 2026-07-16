@@ -66,18 +66,42 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     </nav>
   );
 
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+
   const handleLogout = async () => {
-    if (window.confirm("Are you sure you want to sign out?")) {
-      try {
-        await authService.logout();
-      } finally {
-        logout();
-        router.replace("/login");
-      }
+    try {
+      await authService.logout();
+    } finally {
+      logout();
+      router.replace("/login");
     }
   };
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col">
+      {logoutModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl">
+            <h3 className="text-lg font-bold text-white">Sign out</h3>
+            <p className="mt-2 text-sm text-zinc-400">
+              Are you sure you want to sign out of your account?
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                onClick={() => setLogoutModalOpen(false)}
+                className="rounded-xl px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-600 transition shadow-md shadow-red-500/20"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-900/80 bg-zinc-950 p-4 transition-transform lg:translate-x-0",
@@ -100,7 +124,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             Settings
           </Link>
           <button
-            onClick={handleLogout}
+            onClick={() => setLogoutModalOpen(true)}
             className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-red-500 bg-red-500/10 hover:bg-red-500/20 hover:text-red-400 transition"
           >
             <LogOut size={18} />
