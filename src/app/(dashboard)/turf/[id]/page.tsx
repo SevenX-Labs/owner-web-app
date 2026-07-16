@@ -33,6 +33,7 @@ export default function TurfDetails() {
   const router = useRouter();
   const [turf, setTurf] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [playingVideo, setPlayingVideo] = useState(false);
 
   useEffect(() => {
     ownerService
@@ -342,14 +343,12 @@ export default function TurfDetails() {
                       <Tv size={14} className="text-lime-400" />
                       Promo video uploaded
                     </span>
-                    <a
-                      href={turf.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-lime-300 font-bold hover:underline"
+                    <button
+                      onClick={() => setPlayingVideo(true)}
+                      className="text-lime-300 font-bold hover:text-lime-200 transition"
                     >
                       Play Video
-                    </a>
+                    </button>
                   </div>
                 )}
               </div>
@@ -357,6 +356,37 @@ export default function TurfDetails() {
           )}
         </div>
       </div>
+
+      {playingVideo && turf.videoUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/85 p-4 backdrop-blur-md transition-all duration-300">
+          <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl shadow-lime-400/5 animate-in fade-in zoom-in duration-200">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-zinc-900 px-4 py-3 bg-zinc-900/40">
+              <span className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
+                <Tv size={14} className="text-lime-400" />
+                Promo Video Player
+              </span>
+              <button
+                onClick={() => setPlayingVideo(false)}
+                className="rounded-lg p-1 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200 transition"
+              >
+                <XCircle size={18} />
+              </button>
+            </div>
+            
+            {/* Video Canvas */}
+            <div className="bg-black aspect-video flex items-center justify-center">
+              <video
+                src={turf.videoUrl}
+                controls
+                autoPlay
+                playsInline
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

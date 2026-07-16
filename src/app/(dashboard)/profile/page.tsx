@@ -19,6 +19,7 @@ import {
   Volleyball,
 } from "lucide-react";
 import { ownerService } from "@/services/owner.service";
+import { useAuth } from "@/providers/auth-provider";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/states";
 import { currency } from "@/utils/format";
@@ -45,7 +46,8 @@ const links = [
 ];
 
 export default function Profile() {
-  const [profile, setProfile] = useState<any>();
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
   const [turfs, setTurfs] = useState<any[]>([]);
   const [loadingTurfs, setLoadingTurfs] = useState(true);
   const router = useRouter();
@@ -63,8 +65,17 @@ export default function Profile() {
       .finally(() => setLoadingTurfs(false));
   }, []);
 
-  if (!profile) return <Skeleton className="h-100" />;
-  const name = profile.name || "Owner";
+  if (profile === null && loadingTurfs) return <Skeleton className="h-100" />;
+
+  const resolvedProfile = {
+    ...profile,
+    name: profile?.name || user?.name || (user as any)?.ownerProfile?.name || "Owner",
+    email: profile?.email || user?.email || (user as any)?.ownerProfile?.email || "",
+    contactNumber: profile?.contactNumber || user?.contactNumber || user?.phone || (user as any)?.ownerProfile?.contactNumber || "",
+    createdAt: profile?.createdAt || user?.createdAt || (user as any)?.ownerProfile?.createdAt,
+  };
+
+  const name = resolvedProfile.name;
 
   // Calculate dynamic metrics
   const totalVenues = turfs.length;
@@ -138,12 +149,12 @@ export default function Profile() {
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-zinc-400">
                       <span className="flex items-center gap-1">
                         <Mail size={12} className="text-lime-300" />
-                        {profile.email || "No email added"}
+                        {resolvedProfile.email || "No email added"}
                       </span>
-                      {profile.contactNumber && (
+                      {resolvedProfile.contactNumber && (
                         <span className="flex items-center gap-1">
                           <Phone size={12} className="text-lime-350" />
-                          {profile.contactNumber}
+                          {resolvedProfile.contactNumber}
                         </span>
                       )}
                     </div>
@@ -172,8 +183,8 @@ export default function Profile() {
                       Partner Since
                     </p>
                     <p className="mt-1.5 text-sm font-bold text-zinc-300">
-                      {profile.createdAt 
-                        ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+                      {resolvedProfile.createdAt 
+                        ? new Date(resolvedProfile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                         : "July 2026"}
                     </p>
                   </div>
