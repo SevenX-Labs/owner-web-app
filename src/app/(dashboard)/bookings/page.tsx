@@ -141,7 +141,9 @@ export default function Bookings() {
       {loading ? (
         <Skeleton className="h-100" />
       ) : (
-        <BookingTable bookings={result} />
+        <div className="overflow-x-auto min-w-0 pb-4">
+          <BookingTable bookings={result} />
+        </div>
       )}
     </div>
   );
