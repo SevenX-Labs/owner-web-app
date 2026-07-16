@@ -63,7 +63,7 @@ export function TurfForm({ turf }: { turf?: any }) {
 
   const togglePaymentPref = (pref: string) => {
     if (paymentPrefs.includes(pref)) {
-      setValue("paymentPreferences", paymentPrefs.filter((p) => p !== pref));
+      setValue("paymentPreferences", paymentPrefs.filter((p: string) => p !== pref));
     } else {
       setValue("paymentPreferences", [...paymentPrefs, pref]);
     }
