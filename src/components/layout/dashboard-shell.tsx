@@ -12,10 +12,12 @@ import {
   Menu,
   ScanLine,
   Settings,
+  Sun,
+  Moon,
   UserRound,
   Volleyball,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
@@ -30,7 +32,19 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const path = usePathname(),
     router = useRouter(),
     { user, logout } = useAuth(),
-    [open, setOpen] = useState(false);
+    [open, setOpen] = useState(false),
+    [darkTheme, setDarkTheme] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      setDarkTheme(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setDarkTheme(false);
+    }
+  }, []);
   const nav = (
     <nav className="space-y-1">
       {items.map(({ href, label, icon: Icon }) => (
@@ -70,12 +84,12 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       >
         <Link
           href="/dashboard"
-          className="mb-9 flex items-center gap-3 px-2 text-lg font-black tracking-tight"
+          className="mb-9 flex items-center px-2"
         >
-          <span className="grid size-9 place-items-center rounded-xl bg-lime-400 text-zinc-950">
-            <Volleyball size={20} />
+          <img src="/logo.png" alt="Turfzy" className="h-7 w-auto object-contain" />
+          <span className="ml-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            Owner
           </span>
-          Turfzy <span className="text-zinc-500">Owner</span>
         </Link>
         {nav}
         <div className="mt-auto space-y-2">
@@ -124,6 +138,17 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <ScanLine size={16} />
               Check-in
             </Link>
+            <button
+              onClick={() => {
+                const isDark = document.documentElement.classList.toggle("dark");
+                localStorage.setItem("theme", isDark ? "dark" : "light");
+                setDarkTheme(isDark);
+              }}
+              className="rounded-xl p-2.5 text-zinc-300 hover:bg-zinc-800"
+              aria-label="Toggle theme"
+            >
+              {darkTheme ? <Sun size={19} /> : <Moon size={19} />}
+            </button>
             <Link
               href="/notifications"
               aria-label="Notifications"

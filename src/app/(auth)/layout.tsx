@@ -23,16 +23,8 @@ export default function AuthLayout({
       {/* Main Card container */}
       <div className="w-full max-w-md bg-white rounded-2xl border border-emerald-100/50 shadow-xl shadow-emerald-950/5 p-8 relative z-10">
         {/* Logo Header */}
-        <div className="flex items-center justify-center gap-2.5 mb-8">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-              <path d="M21 12c0-1.66-4-3-9-3s-9 1.34-9 3 4 3 9 3 9-1.34 9-3z" />
-              <path d="M3 12v6c0 1.66 4 3 9 3s9-1.34 9-3v-6" />
-            </svg>
-          </div>
-          <span className="text-xl font-black tracking-tight text-emerald-950">
-            Turfzy <span className="text-emerald-600 font-semibold">Owner</span>
-          </span>
+        <div className="flex items-center justify-center mb-8">
+          <img src="/logo.png" alt="Turfzy" className="h-9 w-auto object-contain" />
         </div>
 
         {/* Children Content (LoginForm or OtpForm) */}

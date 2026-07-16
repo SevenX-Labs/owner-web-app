@@ -1,13 +1,35 @@
 @import "tailwindcss";
 @theme inline {
-  --color-brand: #b8ff17;
+  --color-brand: #22c55e;
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+  /* Color inversion for light theme (white background, black text) */
+  --color-zinc-50: #09090b;
+  --color-zinc-100: #18181b;
+  --color-zinc-200: #27272a;
+  --color-zinc-300: #3f3f46;
+  --color-zinc-400: #52525b;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #a1a1aa;
+  --color-zinc-700: #d4d4d8;
+  --color-zinc-800: #e4e4e7;
+  --color-zinc-850: #f4f4f5;
+  --color-zinc-900: #f4f4f5;
+  --color-zinc-950: #ffffff;
+
+  --color-white: #000000;
+  --color-black: #ffffff;
+
+  /* Remap neon yellow-green to rich brand green for clear contrast on white backgrounds */
+  --color-lime-400: #22c55e;
+  --color-lime-300: #16a34a;
 }
 * {
-  border-color: rgb(39 39 42);
+  border-color: var(--color-zinc-800);
 }
 html {
-  background: #09090b;
+  background: var(--color-zinc-950);
+  color: var(--color-zinc-100);
 }
 body {
   min-height: 100vh;
@@ -20,6 +42,6 @@ textarea {
   -webkit-tap-highlight-color: transparent;
 }
 ::selection {
-  background: #b8ff17;
-  color: #18181b;
+  background: var(--color-brand);
+  color: var(--color-zinc-950);
 }
