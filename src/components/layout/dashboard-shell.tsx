@@ -61,10 +61,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     }
   };
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-950 flex flex-col">
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-800 bg-zinc-950 p-4 transition-transform lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-900/80 bg-zinc-950 p-4 transition-transform lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -102,8 +102,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           className="fixed inset-0 z-30 bg-black/60 lg:hidden"
         />
       )}
-      <main className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-950/85 px-4 backdrop-blur lg:px-8">
+      <main className="lg:pl-64 flex-1 bg-zinc-900/15 flex flex-col">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-zinc-900/50 bg-zinc-950/80 px-4 backdrop-blur lg:px-8">
           <button
             onClick={() => setOpen(true)}
             className="rounded-lg p-2 text-zinc-300 hover:bg-zinc-800 lg:hidden"
@@ -118,6 +118,21 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Link
+              href="/scanner"
+              className="hidden items-center gap-2 rounded-xl bg-lime-400 px-3 py-2 text-sm font-bold text-zinc-950 sm:flex"
+            >
+              <ScanLine size={16} />
+              Check-in
+            </Link>
+            <Link
+              href="/notifications"
+              aria-label="Notifications"
+              className="relative rounded-xl p-2.5 text-zinc-300 hover:bg-zinc-800"
+            >
+              <Bell size={19} />
+              <span className="absolute right-2 top-2 size-2 rounded-full bg-lime-400" />
+            </Link>
+            <Link
               href="/profile"
               aria-label="Profile"
               className="rounded-xl p-2.5 text-zinc-300 hover:bg-zinc-800"
@@ -126,7 +141,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
         </header>
-        <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</div>
+        <div className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
     </div>
   );

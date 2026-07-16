@@ -1,17 +1,27 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import {
+  CalendarDays,
+  Clock3,
+  Search,
+  SlidersHorizontal,
+  WalletCards,
+  XCircle,
+} from "lucide-react";
 import { ownerService } from "@/services/owner.service";
 import type { Booking } from "@/types";
 import { BookingTable } from "@/components/booking/booking-table";
-import { Button } from "@/components/ui/button";
+import { StatCard } from "@/components/dashboard/stat-card";
+import { currency } from "@/utils/format";
 import { ErrorState, Skeleton } from "@/components/ui/states";
+
 export default function Bookings() {
   const [items, setItems] = useState<Booking[]>([]),
     [q, setQ] = useState(""),
     [status, setStatus] = useState(""),
     [loading, setLoading] = useState(true),
     [error, setError] = useState("");
+
   useEffect(() => {
     ownerService
       .bookings()
@@ -19,6 +29,27 @@ export default function Bookings() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
+
+  const stats = useMemo(() => {
+    const total = items.length;
+    const earnings = items
+      .filter((b) => {
+        const s = (b.status || b.bookingStatus || "").toLowerCase();
+        return s === "completed";
+      })
+      .reduce((sum, b) => sum + (b.amount || b.totalAmount || 0), 0);
+    const pending = items.filter((b) => {
+      const s = (b.status || b.bookingStatus || "").toLowerCase();
+      return s.includes("pending");
+    }).length;
+    const cancelled = items.filter((b) => {
+      const s = (b.status || b.bookingStatus || "").toLowerCase();
+      return s.includes("cancel") || s.includes("reject");
+    }).length;
+
+    return { total, earnings, pending, cancelled };
+  }, [items]);
+
   const result = useMemo(
     () =>
       items.filter((b) => {
@@ -32,6 +63,7 @@ export default function Bookings() {
       }),
     [items, q, status],
   );
+
   return (
     <div className="space-y-6">
       <div>
@@ -43,6 +75,44 @@ export default function Bookings() {
           Review, approve and manage every venue reservation.
         </p>
       </div>
+
+      {/* Stat Cards Section */}
+      {loading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((x) => (
+            <Skeleton key={x} className="h-28" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            label="Total Bookings"
+            value={String(stats.total)}
+            icon={CalendarDays}
+            detail="All-time reservations"
+          />
+          <StatCard
+            label="Total Earnings"
+            value={currency(stats.earnings)}
+            icon={WalletCards}
+            detail="Excludes cancellations"
+          />
+          <StatCard
+            label="Pending Approval"
+            value={String(stats.pending)}
+            icon={Clock3}
+            detail="Requires action"
+          />
+          <StatCard
+            label="Cancelled Bookings"
+            value={String(stats.cancelled)}
+            icon={XCircle}
+            detail="Cancelled or rejected"
+          />
+        </div>
+      )}
+
+      {/* Search and Filters */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <label className="flex flex-1 items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3">
           <Search size={18} className="text-zinc-500" />
@@ -68,7 +138,9 @@ export default function Bookings() {
           </select>
         </label>
       </div>
-      {error && <ErrorState message={error} />}{" "}
+
+      {error && <ErrorState message={error} />}
+      
       {loading ? (
         <Skeleton className="h-100" />
       ) : (
