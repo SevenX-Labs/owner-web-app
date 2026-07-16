@@ -16,17 +16,22 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { BookingTable } from "@/components/booking/booking-table";
 import { Card } from "@/components/ui/card";
 import { ErrorState, Skeleton } from "@/components/ui/states";
+import { useAuth } from "@/providers/auth-provider";
+
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null),
+  const [data, setData] = useState<any>(null),
     [loading, setLoading] = useState(true),
     [error, setError] = useState("");
+  const { user } = useAuth();
+
   useEffect(() => {
     ownerService
       .dashboard()
-      .then((r) => setData(r.data ?? (r as unknown as DashboardData)))
+      .then((r) => setData(r.data ?? r))
       .catch((e) => setError(e.message || "Could not load dashboard"))
       .finally(() => setLoading(false));
   }, []);
+
   if (loading)
     return (
       <div className="space-y-6">
@@ -38,6 +43,16 @@ export default function DashboardPage() {
         </div>
       </div>
     );
+
+  const summary = data?.summary || {};
+  const revenue = summary.revenue || {};
+  const counts = summary.counts || {};
+
+  const todayRevenue = revenue.today ?? 0;
+  const totalRevenue = revenue.overall ?? 0;
+  const totalBookings = counts.total ?? 0;
+  const pendingApprovals = counts.pending ?? 0;
+
   return (
     <div className="space-y-8">
       <div>
@@ -45,7 +60,7 @@ export default function DashboardPage() {
           OPERATIONS OVERVIEW
         </p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
-          Good day, {data?.ownerName || "Owner"}
+          Good day, {user?.name || data?.ownerName || "Owner"}
         </h1>
         <p className="mt-2 text-sm text-zinc-500">
           A real-time view of your venues, bookings and revenue.
@@ -55,25 +70,25 @@ export default function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Today’s revenue"
-          value={currency(data?.todayRevenue)}
+          value={currency(todayRevenue)}
           icon={Wallet}
           detail="Live booking collections"
         />
         <StatCard
           label="All-time revenue"
-          value={currency(data?.totalRevenue)}
+          value={currency(totalRevenue)}
           icon={CircleDollarSign}
           detail="Across all venues"
         />
         <StatCard
           label="Total bookings"
-          value={String(data?.totalBookings || 0)}
+          value={String(totalBookings)}
           icon={CalendarDays}
           detail="All booking activity"
         />
         <StatCard
           label="Pending approval"
-          value={String(data?.pendingApprovals || 0)}
+          value={String(pendingApprovals)}
           icon={Clock3}
           detail="Requires your attention"
         />
@@ -94,7 +109,7 @@ export default function DashboardPage() {
         <Card className="p-5">
           <p className="text-sm text-zinc-500">Revenue pulse</p>
           <p className="mt-2 text-3xl font-bold">
-            {currency(data?.todayRevenue)}
+            {currency(todayRevenue)}
           </p>
           <div className="mt-7 flex h-34 items-end gap-2">
             {[35, 60, 42, 75, 52, 92, 68, 80, 56, 95, 71, 83].map((v, i) => (
