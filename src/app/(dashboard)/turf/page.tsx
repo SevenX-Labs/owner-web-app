@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MapPin, Plus, ArrowUpRight } from "lucide-react";
+import { MapPin, Plus } from "lucide-react";
 import { ownerService } from "@/services/owner.service";
 import type { Turf } from "@/types";
 import { Card } from "@/components/ui/card";
@@ -39,42 +39,51 @@ export default function TurfPage() {
           {turfs.map((t) => {
             const coverImage = (t.entranceUrl || t.groundDayUrl || t.groundNightUrl || (Array.isArray(t.images) && t.images[0]) || "") as string;
             return (
-              <Link href={`/turf/${t.id}/edit`} key={t.id}>
-                <Card className="h-full overflow-hidden transition hover:border-lime-400/40">
-                  {coverImage ? (
-                    <img
-                      src={coverImage}
-                      alt={t.name}
-                      className="h-28 w-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-28 bg-gradient-to-br from-lime-400/25 to-zinc-800" />
-                  )}
-                  <div className="p-5">
-                    <div className="flex justify-between gap-3">
-                      <h2 className="font-bold">{t.name}</h2>
-                      <span className="rounded-full bg-emerald-500/15 px-2 py-1 text-xs text-emerald-300">
-                        {t.status || "Active"}
+              <Card className="h-full overflow-hidden transition hover:border-zinc-800" key={t.id}>
+                {coverImage ? (
+                  <img
+                    src={coverImage}
+                    alt={t.name}
+                    className="h-28 w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-28 bg-gradient-to-br from-lime-400/25 to-zinc-800" />
+                )}
+                <div className="p-5">
+                  <div className="flex justify-between gap-3">
+                    <h2 className="font-bold">{t.name}</h2>
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-1 text-xs text-emerald-300 font-semibold">
+                      {t.status || "Active"}
+                    </span>
+                  </div>
+                  <p className="mt-3 flex items-center gap-1 text-sm text-zinc-500">
+                    <MapPin size={14} />
+                    {t.location || t.address || "Location unavailable"}
+                  </p>
+                  <div className="mt-4 flex items-center justify-between border-t border-zinc-800/50 pt-4">
+                    <p className="font-semibold text-zinc-200">
+                      {currency(t.pricePerHour || (t.weekdayDayPrice as number) || 0)}{" "}
+                      <span className="text-sm font-normal text-zinc-500">
+                        / hour
                       </span>
-                    </div>
-                    <p className="mt-3 flex items-center gap-1 text-sm text-zinc-500">
-                      <MapPin size={14} />
-                      {t.location || t.address || "Location unavailable"}
                     </p>
-                    <div className="mt-4 flex items-center justify-between border-t border-zinc-800/50 pt-4">
-                      <p className="font-semibold">
-                        {currency(t.pricePerHour || (t.weekdayDayPrice as number) || 0)}{" "}
-                        <span className="text-sm font-normal text-zinc-500">
-                          / hour
-                        </span>
-                      </p>
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-lime-300">
-                        View / Edit <ArrowUpRight size={13} />
-                      </span>
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/turf/${t.id}`}
+                        className="inline-flex items-center justify-center rounded-lg bg-zinc-800 px-3 py-1.5 text-xs font-bold text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 transition"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        href={`/turf/${t.id}/edit`}
+                        className="inline-flex items-center justify-center rounded-lg bg-lime-400 px-3 py-1.5 text-xs font-bold text-zinc-950 hover:bg-lime-300 transition"
+                      >
+                        Edit
+                      </Link>
                     </div>
                   </div>
-                </Card>
-              </Link>
+                </div>
+              </Card>
             );
           })}
         </div>
