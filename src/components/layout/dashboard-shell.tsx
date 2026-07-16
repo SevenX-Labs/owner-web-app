@@ -143,9 +143,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </Link>
           <button
             onClick={() => setLogoutModalOpen(true)}
-            className="flex w-full items-center gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-3 text-sm font-semibold text-red-200 shadow-sm shadow-red-500/5 transition hover:border-red-400/30 hover:bg-red-500/15 hover:text-red-100 hover:shadow-red-500/10"
+            className="flex w-full items-center gap-3 rounded-2xl border border-red-500/30 bg-red-500/5 px-3 py-3 text-sm font-semibold text-red-600 shadow-sm shadow-red-500/5 transition hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-700"
           >
-            <LogOut size={18} className="text-red-300" />
+            <LogOut size={18} className="text-red-500" />
             <span className="flex-1 text-left">Sign out</span>
           </button>
         </div>
