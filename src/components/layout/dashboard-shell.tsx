@@ -189,14 +189,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             >
               {darkTheme ? <Sun size={19} /> : <Moon size={19} />}
             </button>
-            <Link
-              href="/notifications"
-              aria-label="Notifications"
-              className="relative rounded-xl p-2.5 text-zinc-300 transition hover:bg-white/5 hover:text-white"
-            >
-              <Bell size={19} />
-              <span className="absolute right-2 top-2 size-2 rounded-full bg-lime-400 shadow-[0_0_0_4px_rgba(34,197,94,0.15)]" />
-            </Link>
+            
             <Link
               href="/profile"
               aria-label="Profile"
