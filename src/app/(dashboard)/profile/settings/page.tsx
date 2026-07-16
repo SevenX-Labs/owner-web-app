@@ -28,9 +28,14 @@ export default function SettingsPage() {
     }).catch(() => {});
   }, []);
 
-  const toggleTheme = () => {
-    const isDark = document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
+  const setTheme = (isDark: boolean) => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
     setDarkTheme(isDark);
   };
 
@@ -119,22 +124,28 @@ export default function SettingsPage() {
               </span>
               <div>
                 <p className={`font-semibold ${manualApproval ? "text-lime-300" : "text-zinc-200"}`}>
-                  Manual Booking Approval
+                  Booking Approval
                 </p>
                 <p className="text-sm text-zinc-500">
                   Review bookings before confirming
                 </p>
               </div>
             </div>
-            <button
-              aria-pressed={manualApproval}
-              onClick={() => setManualApproval(!manualApproval)}
-              className={`h-7 w-12 shrink-0 rounded-full p-1 transition-colors self-start sm:self-auto ${manualApproval ? "bg-lime-400" : "bg-zinc-700"}`}
-            >
-              <span
-                className={`block size-5 rounded-full bg-white transition-transform ${manualApproval ? "translate-x-5" : ""}`}
-              />
-            </button>
+            
+            <div className="flex items-center gap-1 bg-zinc-900/80 p-1 rounded-xl shrink-0 self-start sm:self-auto border border-zinc-800">
+              <button
+                onClick={() => setManualApproval(false)}
+                className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${!manualApproval ? "bg-zinc-800 text-lime-400 shadow-sm" : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50"}`}
+              >
+                Instant
+              </button>
+              <button
+                onClick={() => setManualApproval(true)}
+                className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${manualApproval ? "bg-lime-400 text-zinc-950 shadow-sm" : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50"}`}
+              >
+                Manual
+              </button>
+            </div>
           </div>
           
           {/* Theme Toggle */}
@@ -145,18 +156,24 @@ export default function SettingsPage() {
               </span>
               <div>
                 <p className="font-semibold text-zinc-200">Appearance</p>
-                <p className="text-sm text-zinc-500">Toggle dark / light dashboard theme</p>
+                <p className="text-sm text-zinc-500">Choose dashboard theme</p>
               </div>
             </div>
-            <button
-              aria-pressed={darkTheme}
-              onClick={toggleTheme}
-              className={`h-7 w-12 shrink-0 rounded-full p-1 transition-colors self-start sm:self-auto ${darkTheme ? "bg-zinc-700" : "bg-amber-400"}`}
-            >
-              <span
-                className={`block size-5 rounded-full bg-white transition-transform ${darkTheme ? "translate-x-5" : ""}`}
-              />
-            </button>
+
+            <div className="flex items-center gap-1 bg-zinc-900/80 p-1 rounded-xl shrink-0 self-start sm:self-auto border border-zinc-800">
+              <button
+                onClick={() => setTheme(false)}
+                className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${!darkTheme ? "bg-amber-400 text-amber-950 shadow-sm" : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50"}`}
+              >
+                <Sun size={14} /> Light
+              </button>
+              <button
+                onClick={() => setTheme(true)}
+                className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${darkTheme ? "bg-zinc-700 text-zinc-100 shadow-sm" : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50"}`}
+              >
+                <Moon size={14} /> Dark
+              </button>
+            </div>
           </div>
         </Card>
 
