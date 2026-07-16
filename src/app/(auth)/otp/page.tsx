@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { OtpForm } from "@/components/forms/auth-forms";
 import { ArrowLeft } from "lucide-react";
+import { Suspense } from "react";
+
 export default function Otp() {
   return (
     <div className="w-full">
@@ -13,7 +15,15 @@ export default function Otp() {
           Check your phone
         </h1>
       </div>
-      <OtpForm />
+      <Suspense fallback={
+        <div className="space-y-6 animate-pulse">
+          <div className="h-4 bg-zinc-200 rounded w-3/4"></div>
+          <div className="h-12 bg-zinc-100 rounded-xl"></div>
+          <div className="h-10 bg-zinc-200 rounded-xl"></div>
+        </div>
+      }>
+        <OtpForm />
+      </Suspense>
     </div>
   );
 }
