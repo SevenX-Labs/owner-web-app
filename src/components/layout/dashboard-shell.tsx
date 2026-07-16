@@ -124,7 +124,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <div className="hidden text-sm text-zinc-500 sm:block">
             Welcome back,{" "}
             <span className="font-medium text-zinc-200">
-              {user?.name || "Owner"}
+              {user?.name || (user as any)?.ownerProfile?.name || "Owner"}
             </span>
           </div>
           <div className="ml-auto flex items-center gap-2">
