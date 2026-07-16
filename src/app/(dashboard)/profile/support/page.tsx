@@ -1,13 +1,18 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import { SUPPORT_CATEGORIES } from "@/constants";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+
 export default function Support() {
+  const router = useRouter();
   const [category, setCategory] = useState(SUPPORT_CATEGORIES[0]),
     [subject, setSubject] = useState(""),
     [description, setDescription] = useState("");
+
   const submit = () => {
     if (!subject.trim() || !description.trim())
       return toast.error("Fill in all required fields");
@@ -17,14 +22,25 @@ export default function Support() {
     setSubject("");
     setDescription("");
   };
+
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <p className="text-xs font-bold tracking-widest text-lime-300">
-          CUSTOMER CARE
-        </p>
-        <h1 className="mt-2 text-3xl font-bold">Help center</h1>
-      </div>
+    <div className="space-y-6 w-full">
+      <button
+        onClick={() => router.back()}
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition"
+        title="Go back"
+      >
+        <ChevronLeft size={16} />
+        Back
+      </button>
+
+      <div className="mx-auto max-w-3xl space-y-6">
+        <div>
+          <p className="text-xs font-bold tracking-widest text-lime-300">
+            CUSTOMER CARE
+          </p>
+          <h1 className="mt-1 text-3xl font-bold">Help center</h1>
+        </div>
       <Card className="p-5">
         <p className="font-bold">24/7 Support Desk</p>
         <p className="mt-1 text-sm text-zinc-500">
@@ -62,6 +78,7 @@ export default function Support() {
           Submit request
         </Button>
       </Card>
+      </div>
     </div>
   );
 }

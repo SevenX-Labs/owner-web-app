@@ -1,11 +1,15 @@
 "use client";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import { ownerService } from "@/services/owner.service";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field } from "@/components/forms/auth-forms";
+
 export default function Payout() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -20,6 +24,7 @@ export default function Payout() {
       upiId: "",
     },
   });
+
   const submit = async (v: any) => {
     try {
       await ownerService.payout(v);
@@ -30,14 +35,25 @@ export default function Payout() {
       );
     }
   };
+
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <p className="text-xs font-bold tracking-widest text-lime-300">
-          SETTLEMENTS
-        </p>
-        <h1 className="mt-2 text-3xl font-bold">Payout setup</h1>
-      </div>
+    <div className="space-y-6 w-full">
+      <button
+        onClick={() => router.back()}
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition"
+        title="Go back"
+      >
+        <ChevronLeft size={16} />
+        Back
+      </button>
+
+      <div className="mx-auto max-w-2xl space-y-6">
+        <div>
+          <p className="text-xs font-bold tracking-widest text-lime-300">
+            SETTLEMENTS
+          </p>
+          <h1 className="mt-1 text-3xl font-bold">Payout setup</h1>
+        </div>
       <Card className="p-5">
         <form onSubmit={handleSubmit(submit)} className="grid gap-4">
           <Field label="ACCOUNT TYPE">
@@ -66,6 +82,7 @@ export default function Payout() {
           </Button>
         </form>
       </Card>
+      </div>
     </div>
   );
 }
