@@ -300,46 +300,48 @@ export default function BookingDetail() {
       )}
 
       {/* Manual Check-in Section */}
-      <Card className="p-6 border border-zinc-800 bg-zinc-900/40">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-1">
-            <h3 className="font-bold text-white text-base">Manual check-in override</h3>
-            <p className="text-sm text-zinc-500">
-              Use only when the QR scanner cannot complete a verified check-in.
-            </p>
+      {s.toLowerCase() === "confirmed" && (
+        <Card className="p-6 border border-zinc-800 bg-zinc-900/40">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="space-y-1">
+              <h3 className="font-bold text-white text-base">Manual check-in override</h3>
+              <p className="text-sm text-zinc-500">
+                Use only when the QR scanner cannot complete a verified check-in.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 max-w-lg w-full lg:justify-end">
+              <select
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                className="w-full sm:w-64 rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-300 outline-none focus:border-lime-500/50 transition-colors"
+              >
+                <option value="">Select override reason</option>
+                {[
+                  "Scanner Not Working",
+                  "Camera Issue",
+                  "Technical Issue",
+                  "Other",
+                ].map((x) => (
+                  <option key={x} className="bg-zinc-950 text-zinc-300">
+                    {x}
+                  </option>
+                ))}
+              </select>
+              <Button
+                onClick={checkin}
+                disabled={busy || !reason}
+                variant="outline"
+                className={cn(
+                  "w-full sm:w-auto px-5 py-2.5 rounded-xl border-zinc-700 text-zinc-200 hover:bg-zinc-800 transition-all",
+                  reason ? "border-lime-500/30 text-lime-400 hover:bg-lime-500/10" : ""
+                )}
+              >
+                Complete check-in
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 max-w-lg w-full lg:justify-end">
-            <select
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="w-full sm:w-64 rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-300 outline-none focus:border-lime-500/50 transition-colors"
-            >
-              <option value="">Select override reason</option>
-              {[
-                "Scanner Not Working",
-                "Camera Issue",
-                "Technical Issue",
-                "Other",
-              ].map((x) => (
-                <option key={x} className="bg-zinc-950 text-zinc-300">
-                  {x}
-                </option>
-              ))}
-            </select>
-            <Button
-              onClick={checkin}
-              disabled={busy || !reason}
-              variant="outline"
-              className={cn(
-                "w-full sm:w-auto px-5 py-2.5 rounded-xl border-zinc-700 text-zinc-200 hover:bg-zinc-800 transition-all",
-                reason ? "border-lime-500/30 text-lime-400 hover:bg-lime-500/10" : ""
-              )}
-            >
-              Complete check-in
-            </Button>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      )}
     </div>
   );
 }

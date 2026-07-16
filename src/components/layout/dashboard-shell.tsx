@@ -67,11 +67,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   );
 
   const handleLogout = async () => {
-    try {
-      await authService.logout();
-    } finally {
-      logout();
-      router.replace("/login");
+    if (window.confirm("Are you sure you want to sign out?")) {
+      try {
+        await authService.logout();
+      } finally {
+        logout();
+        router.replace("/login");
+      }
     }
   };
   return (
@@ -92,14 +94,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <div className="mt-auto space-y-2">
           <Link
             href="/profile/settings"
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800"
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-400 hover:bg-zinc-800"
           >
             <Settings size={18} />
             Settings
           </Link>
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-red-300 hover:bg-red-500/10"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-red-500 bg-red-500/10 hover:bg-red-500/20 hover:text-red-400 transition"
           >
             <LogOut size={18} />
             Sign out

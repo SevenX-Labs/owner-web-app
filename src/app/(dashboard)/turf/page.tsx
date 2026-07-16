@@ -10,10 +10,21 @@ import { currency } from "@/utils/format";
 export default function TurfPage() {
   const [turfs, setTurfs] = useState<Turf[] | null>(null);
   useEffect(() => {
+    let mounted = true;
     ownerService
       .turfs()
-      .then((r) => setTurfs((r.data || r || []) as Turf[]))
-      .catch(() => setTurfs([]));
+      .then((r) => {
+        if (mounted) setTurfs((r.data || r || []) as Turf[]);
+      })
+      .catch((err) => {
+        if (mounted) {
+          console.error("Failed to fetch turfs:", err);
+          setTurfs([]);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
   return (
     <div className="space-y-6">
