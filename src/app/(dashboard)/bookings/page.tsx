@@ -5,14 +5,13 @@ import {
   Clock3,
   Search,
   SlidersHorizontal,
-  WalletCards,
+  UserX,
   XCircle,
 } from "lucide-react";
 import { ownerService } from "@/services/owner.service";
 import type { Booking } from "@/types";
 import { BookingTable } from "@/components/booking/booking-table";
 import { StatCard } from "@/components/dashboard/stat-card";
-import { currency } from "@/utils/format";
 import { ErrorState, Skeleton } from "@/components/ui/states";
 
 export default function Bookings() {
@@ -32,12 +31,10 @@ export default function Bookings() {
 
   const stats = useMemo(() => {
     const total = items.length;
-    const earnings = items
-      .filter((b) => {
-        const s = (b.status || b.bookingStatus || "").toLowerCase();
-        return s === "completed";
-      })
-      .reduce((sum, b) => sum + (b.amount || b.totalAmount || 0), 0);
+    const noShow = items.filter((b) => {
+      const s = (b.status || b.bookingStatus || "").toLowerCase();
+      return s.includes("no_show") || s.includes("no show");
+    }).length;
     const pending = items.filter((b) => {
       const s = (b.status || b.bookingStatus || "").toLowerCase();
       return s.includes("pending");
@@ -47,7 +44,7 @@ export default function Bookings() {
       return s.includes("cancel") || s.includes("reject");
     }).length;
 
-    return { total, earnings, pending, cancelled };
+    return { total, noShow, pending, cancelled };
   }, [items]);
 
   const result = useMemo(
@@ -92,10 +89,10 @@ export default function Bookings() {
             detail="All-time reservations"
           />
           <StatCard
-            label="Total Earnings"
-            value={currency(stats.earnings)}
-            icon={WalletCards}
-            detail="Excludes cancellations"
+            label="No Shows"
+            value={String(stats.noShow)}
+            icon={UserX}
+            detail="Did not check in"
           />
           <StatCard
             label="Pending Approval"
