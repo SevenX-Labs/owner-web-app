@@ -117,7 +117,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <div className="mb-6 flex items-center justify-between rounded-3xl border border-white/5 bg-white/[0.03] px-3 py-3">
           <Link href="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2">
             <img src="/logo.png" alt="Turfzy" className="h-7 w-auto object-contain" />
-            <span className="text-sm font-semibold tracking-wide text-zinc-100">Owner</span>
+            <span className="text-sm font-semibold tracking-[0.2em] text-zinc-100">PARTNER</span>
           </Link>
           <button 
             onClick={() => setOpen(false)} 
