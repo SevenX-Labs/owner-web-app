@@ -10,6 +10,13 @@ import {
   ChevronLeft,
   ChevronRight,
   CheckCircle2,
+  Calendar,
+  Phone,
+  Mail,
+  ShieldCheck,
+  Star,
+  MapPin,
+  Volleyball,
 } from "lucide-react";
 import { ownerService } from "@/services/owner.service";
 import { Card } from "@/components/ui/card";
@@ -59,11 +66,18 @@ export default function Profile() {
   if (!profile) return <Skeleton className="h-100" />;
   const name = profile.name || "Owner";
 
+  // Calculate dynamic metrics
+  const totalVenues = turfs.length;
+  const avgRating = turfs.length
+    ? (turfs.reduce((acc, t) => acc + (t.averageRating || 0), 0) / turfs.length).toFixed(1)
+    : "0.0";
+
   return (
-    <div className="space-y-6 w-full">
+    <div className="space-y-6 w-full px-2 sm:px-4 md:px-0">
+      {/* Back button */}
       <button
         onClick={() => router.back()}
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
         title="Go back"
       >
         <ChevronLeft size={16} />
@@ -71,17 +85,17 @@ export default function Profile() {
       </button>
 
       <div className="mx-auto max-w-6xl space-y-6">
-        {/* Header */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        {/* Header / Page Title */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-bold tracking-widest text-lime-300">
               OWNER ACCOUNT
             </p>
-            <h1 className="mt-1 text-3xl font-bold tracking-tight">Profile</h1>
+            <h1 className="mt-1 text-3xl font-bold tracking-tight text-white">Profile</h1>
           </div>
           <Link
             href="/profile/edit"
-            className="inline-flex items-center gap-2 rounded-xl bg-lime-400 px-4 py-2.5 text-sm font-bold text-zinc-950 hover:bg-lime-300 transition-all duration-200 shadow-lg shadow-lime-400/10"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-lime-400 px-4 py-2.5 text-sm font-bold text-zinc-950 hover:bg-lime-300 transition-all duration-200 shadow-lg shadow-lime-400/10 active:scale-95 w-full sm:w-auto"
           >
             <Pencil size={16} />
             Edit profile
@@ -90,18 +104,28 @@ export default function Profile() {
 
         {/* Dashboard Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* Main info (left column, 2 cols wide on large screens) */}
+          
+          {/* Main Info Column (Left) */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Elegant glassmorphic profile card */}
+            
+            {/* Elegant Premium Cover Profile Card */}
             <Card className="relative overflow-hidden border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-xl">
-              {/* Abstract decorative background glow */}
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 h-72 w-72 rounded-full bg-gradient-to-tr from-lime-400/10 to-emerald-500/10 blur-3xl pointer-events-none" />
               
-              <div className="p-6 sm:p-8">
-                <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                  {/* Large Initial Avatar with Glow */}
-                  <div className="relative flex-shrink-0">
-                    <div className="grid size-20 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-500 to-lime-400 text-3xl font-black text-zinc-950 shadow-xl shadow-lime-400/20">
+              {/* Cover Banner Background */}
+              <div className="h-32 bg-gradient-to-r from-emerald-950 via-zinc-900 to-lime-950 relative border-b border-zinc-800/40">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-lime-400/10 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-3 right-4 flex items-center gap-1.5 rounded-full bg-zinc-950/65 px-2.5 py-1 text-xs font-medium text-emerald-400 border border-emerald-500/20 backdrop-blur-md">
+                  <ShieldCheck size={13} />
+                  Verified Partner
+                </div>
+              </div>
+
+              {/* Profile Details Content */}
+              <div className="px-6 pb-6 pt-0">
+                <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-10 mb-6">
+                  {/* Large Initial Avatar with border offset */}
+                  <div className="relative z-10">
+                    <div className="grid size-20 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-500 to-lime-400 text-3xl font-black text-zinc-950 shadow-xl shadow-lime-400/30 border-4 border-zinc-950">
                       {name.charAt(0).toUpperCase()}
                     </div>
                     <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-950 p-1">
@@ -109,36 +133,47 @@ export default function Profile() {
                     </span>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-2xl font-bold tracking-tight text-white">{name}</h2>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-lime-400/10 px-2.5 py-0.5 text-xs font-semibold text-lime-300 border border-lime-400/20">
-                        Active Partner
+                  <div className="space-y-1 pb-1">
+                    <h2 className="text-2xl font-bold tracking-tight text-white">{name}</h2>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-zinc-400">
+                      <span className="flex items-center gap-1">
+                        <Mail size={12} className="text-lime-300" />
+                        {profile.email || "No email added"}
                       </span>
+                      {profile.contactNumber && (
+                        <span className="flex items-center gap-1">
+                          <Phone size={12} className="text-lime-350" />
+                          {profile.contactNumber}
+                        </span>
+                      )}
                     </div>
-                    <p className="text-zinc-450 text-sm font-medium">
-                      {profile.email || "No email added"}
-                    </p>
-                    {profile.contactNumber && (
-                      <p className="text-zinc-500 text-sm flex items-center gap-1.5">
-                        <span className="text-lime-300">●</span> {profile.contactNumber}
-                      </p>
-                    )}
                   </div>
                 </div>
 
-                <div className="mt-8 grid gap-4 border-t border-zinc-800/60 pt-6 sm:grid-cols-2">
-                  <div className="rounded-xl bg-zinc-900/30 p-4 border border-zinc-800/30">
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Account ID</p>
-                    <p className="mt-1 text-sm font-semibold text-zinc-300 font-mono">
-                      {profile.id ? `#${profile.id.substring(0, 8).toUpperCase()}` : "N/A"}
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-zinc-800/60 pt-6">
+                  <div className="rounded-xl bg-zinc-900/40 p-4 border border-zinc-800/40 text-center sm:text-left">
+                    <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1">
+                      <Volleyball size={12} className="text-lime-300" />
+                      Venues Owned
                     </p>
+                    <p className="mt-1 text-2xl font-black text-white">{totalVenues}</p>
                   </div>
-                  <div className="rounded-xl bg-zinc-900/30 p-4 border border-zinc-800/30">
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Partner Since</p>
-                    <p className="mt-1 text-sm font-semibold text-zinc-300">
+                  <div className="rounded-xl bg-zinc-900/40 p-4 border border-zinc-800/40 text-center sm:text-left">
+                    <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1">
+                      <Star size={12} className="text-lime-350 fill-lime-300/10" />
+                      Avg Rating
+                    </p>
+                    <p className="mt-1 text-2xl font-black text-white">{avgRating} <span className="text-sm font-medium text-zinc-500">★</span></p>
+                  </div>
+                  <div className="rounded-xl bg-zinc-900/40 p-4 border border-zinc-800/40 text-center sm:text-left col-span-2 sm:col-span-1">
+                    <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1">
+                      <Calendar size={12} className="text-lime-300" />
+                      Partner Since
+                    </p>
+                    <p className="mt-1.5 text-sm font-bold text-zinc-300">
                       {profile.createdAt 
-                        ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                        ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                         : "July 2026"}
                     </p>
                   </div>
@@ -147,8 +182,16 @@ export default function Profile() {
             </Card>
 
             {/* Venues Summary Section */}
-            <div className="space-y-3">
-              <h3 className="text-lg font-bold tracking-tight">Your venues</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold tracking-tight text-white">Your Venues</h3>
+                {turfs.length > 2 && (
+                  <Link href="/turf" className="text-xs font-bold text-lime-300 hover:text-lime-200 transition">
+                    View all {turfs.length} →
+                  </Link>
+                )}
+              </div>
+              
               {loadingTurfs ? (
                 <Skeleton className="h-44" />
               ) : turfs.length ? (
@@ -156,25 +199,28 @@ export default function Profile() {
                   {turfs.slice(0, 2).map((t) => {
                     const coverImage = (t.entranceUrl || t.groundDayUrl || t.groundNightUrl || (Array.isArray(t.images) && t.images[0]) || "") as string;
                     return (
-                      <Card className="overflow-hidden border border-zinc-800/60 bg-zinc-900/20" key={t.id}>
-                        <div className="relative h-24 w-full">
+                      <Card className="overflow-hidden border border-zinc-800/60 bg-zinc-900/20 hover:border-zinc-700/60 hover:scale-[1.01] transition-all duration-300 group" key={t.id}>
+                        <div className="relative h-28 w-full overflow-hidden">
                           {coverImage ? (
                             <img
                               src={coverImage}
                               alt={t.name}
-                              className="h-full w-full object-cover"
+                              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (
                             <div className="h-full w-full bg-gradient-to-br from-lime-400/10 to-zinc-800" />
                           )}
-                          <div className="absolute top-2 right-2 rounded-full bg-zinc-950/85 px-2 py-0.5 text-[10px] text-lime-300 font-bold border border-lime-400/20">
+                          <div className="absolute top-2.5 right-2.5 rounded-full bg-zinc-950/85 px-2 py-0.5 text-[10px] text-lime-300 font-bold border border-lime-400/20 backdrop-blur-sm">
                             {t.sportsType || "SPORTS"}
                           </div>
                         </div>
                         <div className="p-4">
-                          <h4 className="font-bold text-sm text-zinc-100 truncate">{t.name}</h4>
-                          <p className="mt-1 text-xs text-zinc-500 truncate">{t.location || t.address || "Location not set"}</p>
-                          <div className="mt-3 flex items-center justify-between border-t border-zinc-800/30 pt-3">
+                          <h4 className="font-bold text-sm text-zinc-100 truncate group-hover:text-white transition">{t.name}</h4>
+                          <p className="mt-1 text-xs text-zinc-500 truncate flex items-center gap-1">
+                            <MapPin size={11} className="text-zinc-650" />
+                            {t.location || t.address || "Location not set"}
+                          </p>
+                          <div className="mt-3 flex items-center justify-between border-t border-zinc-850 pt-3">
                             <span className="text-xs font-bold text-zinc-300">
                               {currency(t.pricePerHour || (t.weekdayDayPrice as number) || 0)}/hr
                             </span>
@@ -189,16 +235,9 @@ export default function Profile() {
                       </Card>
                     );
                   })}
-                  {turfs.length > 2 && (
-                    <div className="sm:col-span-2 text-center">
-                      <Link href="/turf" className="inline-block text-sm font-semibold text-lime-300 hover:text-lime-200 hover:underline">
-                        View all {turfs.length} venues →
-                      </Link>
-                    </div>
-                  )}
                 </div>
               ) : (
-                <Card className="p-6 border border-dashed border-zinc-800 bg-zinc-900/10 text-center">
+                <Card className="p-8 border border-dashed border-zinc-800 bg-zinc-900/10 text-center">
                   <p className="text-sm text-zinc-500">No active venues connected to this profile.</p>
                   <Link
                     href="/turf/new"
@@ -211,14 +250,16 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Quick Actions (right column, 1 col wide) */}
+          {/* Quick Actions & Security Column (Right) */}
           <div className="space-y-6">
+            
+            {/* Quick Actions List */}
             <div className="space-y-3">
-              <h3 className="text-lg font-bold tracking-tight">Account actions</h3>
+              <h3 className="text-lg font-bold tracking-tight text-white">Account Actions</h3>
               <div className="grid gap-3">
                 {links.map(({ title, sub, Icon, path }) => (
                   <Link href={path} key={title}>
-                    <Card className="flex items-center justify-between p-4 border border-zinc-800/60 bg-zinc-900/20 hover:border-lime-400/40 hover:bg-zinc-900/40 transition duration-200 group">
+                    <Card className="flex items-center justify-between p-4 border border-zinc-800/60 bg-zinc-900/20 hover:border-lime-400/40 hover:bg-zinc-900/40 transition-all duration-300 group hover:scale-[1.01] active:scale-[0.99]">
                       <div className="flex items-center gap-3">
                         <span className="rounded-lg bg-zinc-900/60 p-2.5 text-lime-300 border border-zinc-850 group-hover:border-lime-400/20 transition-all duration-200">
                           <Icon size={18} />
@@ -259,7 +300,15 @@ export default function Profile() {
                 </div>
               </div>
             </Card>
+
+            {/* Partner Support info note */}
+            <div className="rounded-2xl border border-zinc-800/50 bg-zinc-950/40 p-4 text-center">
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                Need urgent platform help? Contact Turfzy Partner Hotline at <span className="font-bold text-lime-300">support@turfzy.com</span>.
+              </p>
+            </div>
           </div>
+          
         </div>
       </div>
     </div>

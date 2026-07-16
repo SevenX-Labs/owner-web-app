@@ -57,24 +57,26 @@ export default function Support() {
             </button>
           ))}
         </div>
-        <label className="mt-6 grid gap-2 text-xs font-bold tracking-widest text-zinc-500">
+        <label className="mt-6 grid gap-2 text-xs font-bold tracking-widest text-zinc-550">
           SUBJECT
           <input
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-3 text-sm font-normal tracking-normal outline-none"
+            className="rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-normal text-zinc-100 outline-none transition focus:border-lime-400/50 focus:ring-1 focus:ring-lime-400/20"
+            placeholder="What do you need assistance with?"
           />
         </label>
-        <label className="mt-4 grid gap-2 text-xs font-bold tracking-widest text-zinc-500">
+        <label className="mt-4 grid gap-2 text-xs font-bold tracking-widest text-zinc-550">
           DESCRIPTION
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={6}
-            className="rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-3 text-sm font-normal tracking-normal outline-none"
+            className="rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-normal text-zinc-100 outline-none transition focus:border-lime-400/50 focus:ring-1 focus:ring-lime-400/20 resize-none"
+            placeholder="Please provide details about your request..."
           />
         </label>
-        <Button onClick={submit} className="mt-5">
+        <Button onClick={submit} className="mt-5 w-full sm:w-auto">
           Submit request
         </Button>
       </Card>

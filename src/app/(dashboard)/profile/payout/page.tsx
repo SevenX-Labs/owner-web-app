@@ -57,9 +57,12 @@ export default function Payout() {
       <Card className="p-5">
         <form onSubmit={handleSubmit(submit)} className="grid gap-4">
           <Field label="ACCOUNT TYPE">
-            <select {...register("accountType")}>
-              <option>SAVINGS</option>
-              <option>CURRENT</option>
+            <select
+              {...register("accountType")}
+              className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-normal text-zinc-105 outline-none cursor-pointer"
+            >
+              <option className="bg-zinc-900 text-zinc-100">SAVINGS</option>
+              <option className="bg-zinc-900 text-zinc-100">CURRENT</option>
             </select>
           </Field>
           <Field label="BANK HOLDER NAME">
