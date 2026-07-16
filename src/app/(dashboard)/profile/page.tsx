@@ -112,8 +112,8 @@ export default function Profile() {
             <Card className="relative overflow-hidden border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-xl">
               
               {/* Cover Banner Background */}
-              <div className="h-32 bg-gradient-to-r from-emerald-950 via-zinc-900 to-lime-950 relative border-b border-zinc-800/40">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-lime-400/10 via-transparent to-transparent pointer-events-none" />
+              <div className="h-32 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 relative border-b border-zinc-800/40">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-lime-500/10 pointer-events-none" />
                 <div className="absolute bottom-3 right-4 flex items-center gap-1.5 rounded-full bg-zinc-950/65 px-2.5 py-1 text-xs font-medium text-emerald-400 border border-emerald-500/20 backdrop-blur-md">
                   <ShieldCheck size={13} />
                   Verified Partner
@@ -122,9 +122,9 @@ export default function Profile() {
 
               {/* Profile Details Content */}
               <div className="px-6 pb-6 pt-0">
-                <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-10 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-6">
                   {/* Large Initial Avatar with border offset */}
-                  <div className="relative z-10">
+                  <div className="relative z-10 -mt-12 flex-shrink-0">
                     <div className="grid size-20 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-500 to-lime-400 text-3xl font-black text-zinc-950 shadow-xl shadow-lime-400/30 border-4 border-zinc-950">
                       {name.charAt(0).toUpperCase()}
                     </div>

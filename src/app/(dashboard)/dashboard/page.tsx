@@ -107,23 +107,39 @@ export default function DashboardPage() {
           <BookingTable bookings={(data?.recentBookings || []) as Booking[]} />
         </div>
         <Card className="p-5">
-          <p className="text-sm text-zinc-500">Revenue pulse</p>
-          <p className="mt-2 text-3xl font-bold">
-            {currency(todayRevenue)}
+          <p className="text-sm text-zinc-500 font-semibold uppercase tracking-wider">Weekly Revenue Trend</p>
+          <p className="mt-2 text-3xl font-black text-white">
+            {currency(totalRevenue)}
           </p>
-          <div className="mt-7 flex h-34 items-end gap-2">
-            {[35, 60, 42, 75, 52, 92, 68, 80, 56, 95, 71, 83].map((v, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-t bg-lime-400/20"
-                style={{ height: `${v}%` }}
-              >
-                <div className="h-1/2 rounded-t bg-lime-400" />
-              </div>
-            ))}
+          <div className="mt-7 flex h-36 items-end gap-3 border-b border-zinc-800/80 pb-2">
+            {(() => {
+              const chartData = data?.trends?.revenueChart || [];
+              const maxVal = Math.max(...chartData.map((c: any) => c.value), 0) || 1;
+              return chartData.map((item: any, i: number) => {
+                const pct = maxVal > 0 ? (item.value / maxVal) * 75 + 25 : 25; // 25% minimum height for empty bars
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2 group relative">
+                    <div
+                      className="w-full rounded-t bg-lime-400/10 hover:bg-lime-400/20 relative cursor-pointer transition-colors duration-200"
+                      style={{ height: `${pct}%` }}
+                    >
+                      <div
+                        className="absolute inset-x-0 bottom-0 rounded-t bg-lime-400 transition-all duration-200 group-hover:bg-lime-300"
+                        style={{ height: `${item.value > 0 ? 100 : 0}%` }}
+                      />
+                      {/* Tooltip on hover */}
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 hidden group-hover:block bg-zinc-950 text-zinc-100 text-[10px] font-bold py-1.5 px-2.5 rounded-lg border border-zinc-800 pointer-events-none z-30 shadow-xl whitespace-nowrap">
+                        {currency(item.value)}
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase truncate">{item.label}</span>
+                  </div>
+                );
+              });
+            })()}
           </div>
-          <p className="mt-4 text-xs text-zinc-500">
-            Today’s booking revenue by time block.
+          <p className="mt-3 text-xs text-zinc-500">
+            Total booking collections over the last 7 days.
           </p>
         </Card>
       </div>
