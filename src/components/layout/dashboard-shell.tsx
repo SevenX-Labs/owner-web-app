@@ -115,16 +115,33 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <div className="mb-6 flex items-center justify-between rounded-3xl border border-white/5 bg-white/[0.03] px-3 py-3">
-          <Link href="/dashboard" onClick={() => setOpen(false)} className="flex items-center gap-2">
+          <Link
+            href="/dashboard"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2"
+          >
             <img src="/logo.png" alt="Turfzy" className="h-7 w-auto object-contain" />
             <span className="text-sm font-semibold tracking-[0.2em] text-zinc-100">PARTNER</span>
           </Link>
-          <button 
-            onClick={() => setOpen(false)} 
+          <button
+            onClick={() => setOpen(false)}
             className="rounded-xl p-2 text-zinc-400 transition-colors hover:bg-white/5 hover:text-white lg:hidden"
             aria-label="Close menu"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
           </button>
         </div>
         <div className="mb-4 px-2">
@@ -160,44 +177,43 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       <main className="flex flex-1 flex-col bg-zinc-900/15 lg:pl-72">
         <header className="sticky top-0 z-20 border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
           <div className="flex h-16 items-center justify-between gap-3 px-4 lg:px-8">
-          <button
-            onClick={() => setOpen(true)}
-            className="rounded-xl p-2 text-zinc-300 transition hover:bg-white/5 lg:hidden"
-          >
-            <Menu size={20} />
-          </button>
-          <div className="hidden min-w-0 sm:block">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-              Dashboard
-            </p>
-            <p className="truncate text-sm text-zinc-300">
-              Welcome back,{" "}
-              <span className="font-semibold text-zinc-100">
-                {user?.name || (user as any)?.ownerProfile?.name || "Owner"}
-              </span>
-            </p>
-          </div>
-          <div className="ml-auto flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] p-1">
             <button
-              onClick={() => {
-                const isDark = document.documentElement.classList.toggle("dark");
-                localStorage.setItem("theme", isDark ? "dark" : "light");
-                setDarkTheme(isDark);
-              }}
-              className="rounded-xl p-2.5 text-zinc-300 transition hover:bg-white/5 hover:text-white"
-              aria-label="Toggle theme"
+              onClick={() => setOpen(true)}
+              className="rounded-xl p-2 text-zinc-300 transition hover:bg-white/5 lg:hidden"
             >
-              {darkTheme ? <Sun size={19} /> : <Moon size={19} />}
+              <Menu size={20} />
             </button>
-            
-            <Link
-              href="/profile"
-              aria-label="Profile"
-              className="rounded-xl p-2.5 text-zinc-300 transition hover:bg-white/5 hover:text-white"
-            >
-              <UserRound size={19} />
-            </Link>
-          </div>
+            <div className="hidden min-w-0 sm:block">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                Dashboard
+              </p>
+              <p className="truncate text-sm text-zinc-300">
+                Welcome back,{" "}
+                <span className="font-semibold text-zinc-100">
+                  {user?.name || (user as any)?.ownerProfile?.name || "Owner"}
+                </span>
+              </p>
+            </div>
+            <div className="ml-auto flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] p-1">
+              <button
+                onClick={() => {
+                  const isDark = document.documentElement.classList.toggle("dark");
+                  localStorage.setItem("theme", isDark ? "dark" : "light");
+                  setDarkTheme(isDark);
+                }}
+                className="rounded-xl p-2.5 text-zinc-300 transition hover:bg-white/5 hover:text-white"
+                aria-label="Toggle theme"
+              >
+                {darkTheme ? <Sun size={19} /> : <Moon size={19} />}
+              </button>
+              <Link
+                href="/profile"
+                aria-label="Profile"
+                className="rounded-xl p-2.5 text-zinc-300 transition hover:bg-white/5 hover:text-white"
+              >
+                <UserRound size={19} />
+              </Link>
+            </div>
           </div>
         </header>
         <div className="mx-auto w-full max-w-7xl flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
