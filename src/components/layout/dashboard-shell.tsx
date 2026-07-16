@@ -77,7 +77,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     }
   };
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col">
+    <div className="min-h-dvh overflow-hidden bg-zinc-950 flex flex-col">
       {logoutModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl">
@@ -104,7 +104,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       )}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-900/80 bg-zinc-950 p-4 transition-transform lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex h-dvh w-64 flex-col overflow-y-auto border-r border-zinc-900/80 bg-zinc-950 p-4 transition-transform lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -145,7 +145,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           className="fixed inset-0 z-30 bg-black/60 lg:hidden"
         />
       )}
-      <main className="lg:pl-64 flex-1 bg-zinc-900/15 flex flex-col">
+      <main className="flex flex-1 flex-col bg-zinc-900/15 lg:pl-64">
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-zinc-900/50 bg-zinc-950/80 px-4 backdrop-blur lg:px-8">
           <button
             onClick={() => setOpen(true)}
@@ -188,7 +188,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
         </header>
-        <div className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6 lg:p-8">{children}</div>
+        <div className="mx-auto w-full max-w-7xl flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          {children}
+        </div>
       </main>
     </div>
   );
