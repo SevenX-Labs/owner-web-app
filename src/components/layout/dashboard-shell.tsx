@@ -87,9 +87,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           className="mb-9 flex items-center px-2"
         >
           <img src="/logo.png" alt="Turfzy" className="h-7 w-auto object-contain" />
-          <span className="ml-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
-            Owner
-          </span>
         </Link>
         {nav}
         <div className="mt-auto space-y-2">
