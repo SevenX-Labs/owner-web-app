@@ -113,6 +113,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           className="mb-9 flex items-center px-2"
         >
           <img src="/logo.png" alt="Turfzy" className="h-7 w-auto object-contain" />
+          <button 
+            onClick={() => setOpen(false)} 
+            className="ml-auto rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white lg:hidden transition-colors"
+            aria-label="Close menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </Link>
         {nav}
         <div className="mt-auto space-y-2">

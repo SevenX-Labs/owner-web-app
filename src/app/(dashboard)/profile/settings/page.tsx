@@ -75,7 +75,7 @@ export default function SettingsPage() {
         Back
       </button>
 
-      <div className="mx-auto max-w-3xl space-y-6">
+      <div className="mx-auto max-w-5xl space-y-6">
         <div>
           <p className="text-xs font-bold tracking-widest text-lime-300">
             APP CONFIGURATION
