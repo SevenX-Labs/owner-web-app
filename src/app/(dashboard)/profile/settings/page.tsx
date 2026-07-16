@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Moon, Sun, ChevronLeft, ShieldAlert, UserCog } from "lucide-react";
+import { Moon, Sun, ChevronLeft, ShieldAlert, UserCog, Landmark } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ownerService } from "@/services/owner.service";
@@ -92,6 +92,22 @@ export default function SettingsPage() {
             </div>
             <Link href="/profile" className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-semibold rounded-lg transition-colors">
               Edit Profile
+            </Link>
+          </div>
+
+          {/* Bank Details */}
+          <div className="flex items-center justify-between p-5 hover:bg-zinc-900/30 transition-colors">
+            <div className="flex items-center gap-4">
+              <span className="rounded-xl p-2.5 bg-zinc-800 text-lime-300">
+                <Landmark size={18} />
+              </span>
+              <div>
+                <p className="font-semibold text-zinc-200">Bank Details & Payouts</p>
+                <p className="text-sm text-zinc-500">Manage your bank account for settlements</p>
+              </div>
+            </div>
+            <Link href="/profile/payout" className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-semibold rounded-lg transition-colors">
+              Setup Bank
             </Link>
           </div>
 
