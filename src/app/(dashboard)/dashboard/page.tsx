@@ -40,25 +40,16 @@ export default function DashboardPage() {
     );
   return (
     <div className="space-y-8">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-medium text-lime-300">
-            OPERATIONS OVERVIEW
-          </p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight">
-            Good day, {data?.ownerName || "Owner"}
-          </h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            A real-time view of your venues, bookings and revenue.
-          </p>
-        </div>
-        <Link
-          href="/scanner"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-lime-400 px-4 py-3 text-sm font-bold text-zinc-950"
-        >
-          <ScanLine size={17} />
-          Scan QR check-in
-        </Link>
+      <div>
+        <p className="text-sm font-medium text-lime-300">
+          OPERATIONS OVERVIEW
+        </p>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight">
+          Good day, {data?.ownerName || "Owner"}
+        </h1>
+        <p className="mt-2 text-sm text-zinc-500">
+          A real-time view of your venues, bookings and revenue.
+        </p>
       </div>
       {error && <ErrorState message={error} />}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

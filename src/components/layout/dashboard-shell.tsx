@@ -131,13 +131,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </span>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Link
-              href="/scanner"
-              className="hidden items-center gap-2 rounded-xl bg-lime-400 px-3 py-2 text-sm font-bold text-zinc-950 sm:flex"
-            >
-              <ScanLine size={16} />
-              Check-in
-            </Link>
             <button
               onClick={() => {
                 const isDark = document.documentElement.classList.toggle("dark");
