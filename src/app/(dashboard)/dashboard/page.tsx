@@ -93,8 +93,8 @@ export default function DashboardPage() {
           detail="Requires your attention"
         />
       </div>
-      <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-        <div>
+      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-[1.5fr_1fr]">
+        <div className="min-w-0 overflow-hidden">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-bold">Recent bookings</h2>
             <Link
@@ -104,7 +104,9 @@ export default function DashboardPage() {
               View all <ArrowUpRight size={15} />
             </Link>
           </div>
-          <BookingTable bookings={(data?.recentBookings || []) as Booking[]} />
+          <div className="overflow-x-auto">
+            <BookingTable bookings={(data?.recentBookings || []) as Booking[]} />
+          </div>
         </div>
         <Card className="p-5">
           <p className="text-sm text-zinc-500 font-semibold uppercase tracking-wider">Weekly Revenue Trend</p>
