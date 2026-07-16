@@ -187,61 +187,106 @@ export function TurfForm({ turf }: { turf?: any }) {
       </div>
 
       {/* Settings */}
-      <div className="md:col-span-2 mt-4">
-        <p className="mb-2 text-xs font-bold tracking-widest text-zinc-500">BOOKING PREFERENCES</p>
-        <div className="grid md:grid-cols-2 gap-4">
+      <div className="md:col-span-2 mt-6">
+        <div className="mb-4 pb-2 border-b border-zinc-800/80">
+          <h3 className="text-sm font-bold tracking-widest text-lime-400">BOOKING PREFERENCES</h3>
+          <p className="text-xs text-zinc-500 mt-1">Configure how customers book and pay for your venue.</p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-6">
           <Field label="APPROVAL TYPE">
-            <select {...register("bookingApprovalType")} className="w-full bg-zinc-950 px-3 py-2 border rounded-xl">
-              <option value="INSTANT">Instant Approval</option>
+            <select {...register("bookingApprovalType")} className="w-full bg-zinc-900/50 px-4 py-3 border border-zinc-800 rounded-xl text-zinc-200 outline-none focus:border-lime-500/50 transition-colors">
+              <option value="INSTANT">Instant Approval (Recommended)</option>
               <option value="MANUAL">Manual Review</option>
             </select>
           </Field>
           <div>
-            <span className="block mb-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">Payment Modes</span>
-            <div className="flex flex-wrap gap-2">
-              {["FULL_ONLINE", "ADVANCE_PAYMENT", "FULL_CASH"].map((mode) => (
-                <button
-                  type="button"
-                  key={mode}
-                  onClick={() => togglePaymentPref(mode)}
-                  className={`rounded-full px-3 py-1.5 text-xs transition-colors ${paymentPrefs.includes(mode) ? "bg-blue-500/20 text-blue-400 border border-blue-500/50" : "bg-zinc-800 text-zinc-400 border border-transparent"}`}
-                >
-                  {mode.replace("_", " ")}
-                </button>
-              ))}
+            <span className="block mb-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">Payment Modes Accepted</span>
+            <div className="flex flex-wrap gap-2.5">
+              {[
+                { id: "FULL_ONLINE", label: "100% Online" },
+                { id: "ADVANCE_PAYMENT", label: "Partial Advance" },
+                { id: "FULL_CASH", label: "Pay at Venue" }
+              ].map((mode) => {
+                const isSelected = paymentPrefs.includes(mode.id);
+                return (
+                  <button
+                    type="button"
+                    key={mode.id}
+                    onClick={() => togglePaymentPref(mode.id)}
+                    className={`relative overflow-hidden rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                      isSelected 
+                        ? "bg-lime-400/10 text-lime-400 border-2 border-lime-400/50 shadow-[0_0_15px_rgba(163,230,53,0.1)]" 
+                        : "bg-zinc-900/50 text-zinc-400 border-2 border-zinc-800 hover:border-zinc-700 hover:text-zinc-300"
+                    }`}
+                  >
+                    {mode.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
       {/* Media Uploads */}
-      <div className="md:col-span-2 mt-4">
-        <p className="mb-3 text-xs font-bold tracking-widest text-zinc-500 border-b border-zinc-800 pb-2">MEDIA UPLOADS (Optional when editing)</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <label className="grid gap-2 text-xs font-bold text-zinc-400">
-            ENTRANCE / PARKING IMAGE
-            <input type="file" accept="image/*" onChange={(e) => setEntranceImg(e.target.files?.[0] || null)} className="rounded-xl border border-dashed border-zinc-700 bg-zinc-950 p-2 text-sm" />
+      <div className="md:col-span-2 mt-6">
+        <div className="mb-4 pb-2 border-b border-zinc-800/80">
+          <h3 className="text-sm font-bold tracking-widest text-lime-400">MEDIA UPLOADS</h3>
+          <p className="text-xs text-zinc-500 mt-1">Upload high-quality images and a promo video. These are optional when editing.</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <label className="flex flex-col gap-2">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Entrance / Parking</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={(e) => setEntranceImg(e.target.files?.[0] || null)} 
+              className="w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 hover:file:text-white file:transition-colors border border-dashed border-zinc-700 rounded-xl p-2 bg-zinc-900/30 cursor-pointer focus:outline-none focus:border-lime-500/50" 
+            />
           </label>
-          <label className="grid gap-2 text-xs font-bold text-zinc-400">
-            DAY TURF IMAGE
-            <input type="file" accept="image/*" onChange={(e) => setDayTurfImg(e.target.files?.[0] || null)} className="rounded-xl border border-dashed border-zinc-700 bg-zinc-950 p-2 text-sm" />
+          
+          <label className="flex flex-col gap-2">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Day Turf Image</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={(e) => setDayTurfImg(e.target.files?.[0] || null)} 
+              className="w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 hover:file:text-white file:transition-colors border border-dashed border-zinc-700 rounded-xl p-2 bg-zinc-900/30 cursor-pointer focus:outline-none focus:border-lime-500/50" 
+            />
           </label>
-          <label className="grid gap-2 text-xs font-bold text-zinc-400">
-            NIGHT TURF IMAGE
-            <input type="file" accept="image/*" onChange={(e) => setNightTurfImg(e.target.files?.[0] || null)} className="rounded-xl border border-dashed border-zinc-700 bg-zinc-950 p-2 text-sm" />
+          
+          <label className="flex flex-col gap-2">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Night Turf Image</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={(e) => setNightTurfImg(e.target.files?.[0] || null)} 
+              className="w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 hover:file:text-white file:transition-colors border border-dashed border-zinc-700 rounded-xl p-2 bg-zinc-900/30 cursor-pointer focus:outline-none focus:border-lime-500/50" 
+            />
           </label>
         </div>
-        <div className="mt-4">
-          <label className="grid gap-2 text-xs font-bold text-zinc-400">
-            PROMO VIDEO (MP4, MOV)
-            <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] || null)} className="rounded-xl border border-dashed border-zinc-700 bg-zinc-950 p-2 text-sm" />
+
+        <div className="mt-5">
+          <label className="flex flex-col gap-2">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Promo Video (MP4, MOV)</span>
+            <input 
+              type="file" 
+              accept="video/*" 
+              onChange={(e) => setVideo(e.target.files?.[0] || null)} 
+              className="w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-lime-400 file:text-zinc-950 hover:file:bg-lime-300 file:transition-colors border border-dashed border-zinc-700 rounded-xl p-2 bg-zinc-900/30 cursor-pointer focus:outline-none focus:border-lime-500/50" 
+            />
           </label>
         </div>
       </div>
 
-      <div className="md:col-span-2 pt-4">
-        <Button disabled={isSubmitting} className="w-full text-base py-3">
-          {isSubmitting ? "Saving venue…" : turf ? "Update Venue Details" : "Create Venue"}
+      <div className="md:col-span-2 pt-6 pb-4">
+        <Button 
+          disabled={isSubmitting} 
+          className="w-full text-base py-4 font-bold rounded-xl shadow-lg shadow-lime-400/20"
+        >
+          {isSubmitting ? "Saving venue details…" : turf ? "Update Venue Details" : "Create Venue"}
         </Button>
       </div>
     </form>
