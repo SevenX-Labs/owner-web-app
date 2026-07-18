@@ -14,6 +14,9 @@ import {
   ShieldCheck,
   User,
   X,
+  QrCode,
+  Camera,
+  Clock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -31,7 +34,9 @@ export default function BookingDetail() {
     [booking, setBooking] = useState<Booking | null>(null),
     [loading, setLoading] = useState(true),
     [busy, setBusy] = useState(false),
-    [reason, setReason] = useState("");
+    [reason, setReason] = useState(""),
+    [showScanner, setShowScanner] = useState(false),
+    [scanning, setScanning] = useState(false);
 
   useEffect(() => {
     ownerService
@@ -40,6 +45,107 @@ export default function BookingDetail() {
       .catch((e) => toast.error(e.message))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (!showScanner) return;
+    
+    let html5Qrcode: any = null;
+    
+    import("html5-qrcode").then(({ Html5Qrcode }) => {
+      html5Qrcode = new Html5Qrcode("reader");
+      
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+      };
+      
+      html5Qrcode.start(
+        { facingMode: "environment" },
+        config,
+        async (decodedText: string) => {
+          setScanning(true);
+          try {
+            await ownerService.verifyQr(decodedText);
+            toast.success("Check-in verified successfully!");
+            setShowScanner(false);
+            router.push("/bookings");
+          } catch (err: any) {
+            toast.error(err instanceof Error ? err.message : "Invalid or expired QR code");
+          } finally {
+            setScanning(false);
+          }
+        },
+        (errorMessage: string) => {
+          // ignore scan failures
+        }
+      ).catch((err: any) => {
+        console.error("Scanner failed to start", err);
+        toast.error("Could not start camera. Please verify permission.");
+        setShowScanner(false);
+      });
+    }).catch((err) => {
+      console.error("Failed to load html5-qrcode dynamically", err);
+      toast.error("Failed to load scanner.");
+      setShowScanner(false);
+    });
+    
+    return () => {
+      if (html5Qrcode) {
+        if (html5Qrcode.isScanning) {
+          html5Qrcode.stop().catch((err: any) => console.error("Failed to stop scanner", err));
+        }
+      }
+    };
+  }, [showScanner, router]);
+
+  const getCheckInWindow = () => {
+    if (!booking) return null;
+    const dateStr = booking.bookingDate || booking.date;
+    const startTimeStr = booking.startTime || booking.slot?.startTime;
+    const endTimeStr = booking.endTime || booking.slot?.endTime;
+
+    if (!dateStr || !startTimeStr || !endTimeStr) return null;
+
+    try {
+      const dStart = new Date(dateStr);
+      const [sH, sM] = startTimeStr.split(":").map(Number);
+      const slotStart = new Date(dStart.getFullYear(), dStart.getMonth(), dStart.getDate(), sH, sM);
+
+      const dEnd = new Date(dateStr);
+      const [eH, eM] = endTimeStr.split(":").map(Number);
+      const slotEnd = new Date(dEnd.getFullYear(), dEnd.getMonth(), dEnd.getDate(), eH, eM);
+
+      if (startTimeStr > endTimeStr) {
+        slotEnd.setDate(slotEnd.getDate() + 1);
+      }
+
+      const windowStart = new Date(slotStart.getTime() - 10 * 60 * 1000); // 10 min before
+      const windowEnd = new Date(slotEnd.getTime() - 20 * 60 * 1000);   // 20 min prior to end
+
+      return { windowStart, windowEnd, slotStart, slotEnd };
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+
+  const checkInWindow = getCheckInWindow();
+  const now = new Date();
+  const isWindowActive = checkInWindow 
+    ? (now >= checkInWindow.windowStart && now <= checkInWindow.windowEnd) 
+    : false;
+
+  const getStatusText = () => {
+    if (!checkInWindow) return "Window info unavailable";
+    if (now < checkInWindow.windowStart) {
+      const timeStr = checkInWindow.windowStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return `Opens at ${timeStr}`;
+    }
+    if (now > checkInWindow.windowEnd) {
+      return "Window expired";
+    }
+    return "Check-in window active";
+  };
 
   const action = async (type: "approve" | "reject") => {
     setBusy(true);
@@ -299,48 +405,150 @@ export default function BookingDetail() {
         </Card>
       )}
 
-      {/* Manual Check-in Section */}
+      {/* Check-in Section */}
       {s.toLowerCase() === "confirmed" && (
-        <Card className="p-6 border border-zinc-800 bg-zinc-900/40">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <Card className="p-6 border border-zinc-800 bg-zinc-900/40 space-y-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-zinc-800/80 pb-4">
             <div className="space-y-1">
-              <h3 className="font-bold text-white text-base">Manual check-in override</h3>
+              <h3 className="font-bold text-white text-base">Check-in Verification</h3>
               <p className="text-sm text-zinc-500">
-                Use only when the QR scanner cannot complete a verified check-in.
+                Verify customer arrival. Check-in is only available 10 minutes before the slot starts and up to 20 minutes before it ends.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 max-w-lg w-full lg:justify-end">
-              <select
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                className="w-full sm:w-64 rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-300 outline-none focus:border-lime-500/50 transition-colors"
-              >
-                <option value="">Select override reason</option>
-                {[
-                  "Scanner Not Working",
-                  "Camera Issue",
-                  "Technical Issue",
-                  "Other",
-                ].map((x) => (
-                  <option key={x} className="bg-zinc-950 text-zinc-300">
-                    {x}
-                  </option>
-                ))}
-              </select>
+            {checkInWindow && (
+              <div className={cn(
+                "inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-semibold border",
+                isWindowActive 
+                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                  : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+              )}>
+                <span className={cn("size-2 rounded-full", isWindowActive ? "bg-emerald-400 animate-pulse" : "bg-amber-400")} />
+                {isWindowActive ? "Check-in Active" : getStatusText()}
+              </div>
+            )}
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* QR Scan Option */}
+            <div className="space-y-3 rounded-2xl border border-zinc-800/60 bg-zinc-950/40 p-5 flex flex-col justify-between">
+              <div className="space-y-1.5">
+                <h4 className="font-bold text-white flex items-center gap-2">
+                  <QrCode size={18} className="text-lime-400" />
+                  QR Scan Check-in
+                </h4>
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  Scan the check-in QR code displayed on the customer's Turfzy app to instantly complete check-in.
+                </p>
+              </div>
               <Button
-                onClick={checkin}
-                disabled={busy || !reason}
-                variant="outline"
+                onClick={() => {
+                  if (!isWindowActive) {
+                    toast.error("Check-in is only available 10 minutes before slot start and 20 minutes prior to slot end.");
+                    return;
+                  }
+                  setShowScanner(true);
+                }}
+                disabled={busy}
                 className={cn(
-                  "w-full sm:w-auto px-5 py-2.5 rounded-xl border-zinc-700 text-zinc-200 hover:bg-zinc-800 transition-all",
-                  reason ? "border-lime-500/30 text-lime-400 hover:bg-lime-500/10" : ""
+                  "w-full rounded-xl py-3 font-bold mt-2",
+                  isWindowActive ? "bg-lime-400 text-black hover:bg-lime-500" : "bg-zinc-800 text-zinc-500 hover:bg-zinc-800"
                 )}
               >
-                Complete check-in
+                <Camera size={16} className="mr-2 inline" />
+                Scan QR Code
               </Button>
+            </div>
+
+            {/* Manual Check-in Override Option */}
+            <div className="space-y-3 rounded-2xl border border-zinc-800/60 bg-zinc-950/40 p-5 flex flex-col justify-between">
+              <div className="space-y-1.5">
+                <h4 className="font-bold text-white flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-zinc-400" />
+                  Manual Check-in Override
+                </h4>
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  Manually check-in the customer if the QR scanner is unavailable or experiencing technical issues.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 mt-2">
+                <select
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  disabled={!isWindowActive}
+                  className={cn(
+                    "w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none transition-colors bg-zinc-950 text-zinc-300",
+                    isWindowActive ? "border-zinc-800 focus:border-lime-500/50" : "border-zinc-900 opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  <option value="">Select override reason</option>
+                  {[
+                    "Scanner Not Working",
+                    "Camera Issue",
+                    "Technical Issue",
+                    "Other",
+                  ].map((x) => (
+                    <option key={x} className="bg-zinc-950 text-zinc-300">
+                      {x}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  onClick={checkin}
+                  disabled={busy || !reason || !isWindowActive}
+                  variant="outline"
+                  className={cn(
+                    "w-full py-2.5 rounded-xl border-zinc-700 text-zinc-200 hover:bg-zinc-800 transition-all font-bold",
+                    reason && isWindowActive ? "border-lime-500/30 text-lime-400 hover:bg-lime-500/10" : ""
+                  )}
+                >
+                  <Check size={16} className="mr-2 inline" />
+                  Complete manual check-in
+                </Button>
+              </div>
             </div>
           </div>
         </Card>
+      )}
+
+      {/* QR Scanner Modal Overlay */}
+      {showScanner && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-2xl">
+            <button
+              onClick={() => setShowScanner(false)}
+              className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors"
+            >
+              <X size={20} />
+            </button>
+            <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+              <QrCode className="text-lime-400" size={20} />
+              Scan Customer QR
+            </h2>
+            <p className="text-xs text-zinc-400 mb-4">
+              Position the customer's check-in QR code inside the frame to scan.
+            </p>
+            
+            <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-black aspect-square w-full">
+              <div id="reader" className="w-full h-full" />
+              {scanning && (
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-2">
+                  <div className="size-8 animate-spin rounded-full border-4 border-lime-400 border-t-transparent" />
+                  <span className="text-xs text-zinc-300">Verifying check-in...</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-4 flex gap-2">
+              <Button
+                variant="outline"
+                className="w-full rounded-xl border-zinc-800 text-zinc-300"
+                onClick={() => setShowScanner(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
