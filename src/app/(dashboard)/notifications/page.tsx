@@ -12,7 +12,7 @@ export default function Notifications() {
     if (!("Notification" in window)) return;
     const result = await Notification.requestPermission();
     if (result === "granted")
-      new Notification("Turfzy Owner", {
+      new Notification("Turfzy Partner", {
         body: "Browser notifications enabled.",
       });
   };

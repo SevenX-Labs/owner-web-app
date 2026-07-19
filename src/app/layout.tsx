@@ -3,9 +3,12 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/providers/auth-provider";
 export const metadata: Metadata = {
-  title: { default: "Turfzy Owner", template: "%s · Turfzy Owner" },
+  title: { default: "Turfzy Partner", template: "%s · Turfzy Partner" },
   description:
     "Operate your sports venues, bookings and settlements from one place.",
+  icons: {
+    icon: "/turfzy-app-log.png",
+  },
 };
 export default function RootLayout({
   children,
